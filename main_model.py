@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import time
 import os
 import copy
+import matplotlib.pyplot as plt
 print("PyTorch Version: ",torch.__version__)
 print("Torchvision Version: ",torchvision.__version__)
 
@@ -19,14 +20,27 @@ import pickle
 from utils_data import GenerateDataloader,spec_to_image,get_melspectrogram_db_2
 # Detect if we have a GPU available
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+import wandb
+import random
+
+# start a new wandb run to track this script
+wandb.init(
+    # set the wandb project where this run will be logged
+    project="my-awesome-project",
+    
+    # track hyperparameters and run metadata
+    config={
+    "learning_rate": 0.02,
+    "architecture": "CNN",
+    "dataset": "CIFAR-100",
+    "epochs": 10,
+    }
+)
 
 # Load the saved dataloader
-with open('dataloader.pkl', 'rb') as f:
+with open('dataloaderClasse.pkl', 'rb') as f:
     loaded_dataloader = pickle.load(f)
-
-for i,l in loaded_dataloader["train"]:
-    print(i)
-    print(l)
+    print(loaded_dataloader)
 
 
 def train_model(model, dataloaders, criterion, optimizer, num_epochs=25):
@@ -55,8 +69,11 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25):
 
             # Iterate over data.
             for inputs, labels in dataloaders[phase]:
-                inputs = inputs.to(device)
-                labels = labels.to(device)
+                
+                inputs = inputs.to(device,dtype=torch.float32)
+                #inputs= inputs.to(torch.cuda.FloatTensor)
+                labels = torch.tensor(labels)
+                labels = labels.to(device,dtype=torch.long)
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
@@ -82,6 +99,10 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25):
 
             epoch_loss = running_loss / len(dataloaders[phase].dataset)
             epoch_acc = running_corrects.double() / len(dataloaders[phase].dataset)
+
+            if phase == "train":
+
+                wandb.log({"acc": epoch_acc, "loss": epoch_loss})
 
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
 
@@ -114,10 +135,12 @@ def initialize_model(num_classes):
   model = models.resnet18(pretrained=True) # Inicialitzem la ariqutectura i els paramatres pre entrenats
   set_parameter_requires_grad(model,True) #Congelem el model perque no convvi el model
   model.fc = nn.Linear(in_features=512, out_features=num_classes) #Creem despres de congelar la ultima capa que sera la fully conectet
+  model.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False) # canviem perque accepit 1 chanel que es el que li passem
+
   input_size=224
   return model,input_size
 
-num_classes = 156
+num_classes = 8
 # Initialize the model
 model, input_size = initialize_model(num_classes)
 
@@ -129,12 +152,13 @@ model = model.to(device)
 criterion = nn.CrossEntropyLoss()
 
 # Number of epochs to train for 
-num_epochs = 3
+num_epochs = 25
 
 optimizer_ft = optim.Adam(model.parameters(), lr=0.001)
 
 # Train and evaluate
 model_feature, histFeature, lossesFeature = train_model(model, loaded_dataloader, criterion, optimizer_ft, num_epochs=num_epochs)
+
 
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
@@ -148,3 +172,5 @@ ax2.plot(histFeature["val"],label="val accuracy")
 ax2.legend()
 
 plt.show()  
+
+wandb.finish()
