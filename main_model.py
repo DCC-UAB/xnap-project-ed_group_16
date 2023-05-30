@@ -13,6 +13,8 @@ import time
 import os
 import copy
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+
 print("PyTorch Version: ",torch.__version__)
 print("Torchvision Version: ",torchvision.__version__)
 
@@ -23,24 +25,24 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 import wandb
 import random
 
-# start a new wandb run to track this script
-wandb.init(
-    # set the wandb project where this run will be logged
-    project="my-awesome-project",
+# # start a new wandb run to track this script
+# wandb.init(
+#     # set the wandb project where this run will be logged
+#     project="my-awesome-project",
     
-    # track hyperparameters and run metadata
-    config={
-    "learning_rate": 0.02,
-    "architecture": "CNN",
-    "dataset": "CIFAR-100",
-    "epochs": 10,
-    }
-)
+#     # track hyperparameters and run metadata
+#     config={
+#     "learning_rate": 0.02,
+#     "architecture": "CNN",
+#     "dataset": "CIFAR-100",
+#     "epochs": 10,
+#     }
+# )
 
-# Load the saved dataloader
-with open('dataloaderClasse.pkl', 'rb') as f:
-    loaded_dataloader = pickle.load(f)
-    print(loaded_dataloader)
+# # Load the saved dataloader
+# with open('dataloaderClasse.pkl', 'rb') as f:
+#     loaded_dataloader = pickle.load(f)
+#     print(loaded_dataloader)
 
 
 def train_model(model, dataloaders, criterion, optimizer, num_epochs=25):
@@ -48,10 +50,14 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25):
 
     acc_history = {"train": [], "val": []}
     losses = {"train": [], "val": []}
-
+    #ground_truth = []
+    #predictions = []
     # we will keep a copy of the best weights so far according to validation accuracy
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
+
+    #confusion_matrix = np.zeros((8, 8), dtype=int) #Inicialitzem matriu de confusuio 8 classes
+
 
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
@@ -88,7 +94,16 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25):
 
                     _, preds = torch.max(outputs, 1)
 
+                    #ground_truth.extend(labels.tolist())
+                    #predictions.extend(preds.tolist())
+                    #print(labels,preds)
+                    # Update confusion matrix
+
+                    #for t, p in zip(labels.view(-1), preds.view(-1)):
+                    #   confusion_matrix[t.long(), p.long()] += 1
                     # backward + optimize only if in training phase
+                    #wandb.log({"confusion_matrix": wandb.plot.confusion_matrix(probs=None,y_true=labels.data, preds=preds,class_names=["Hip-Hop","Pop","Folk","Experimental","Rock","International","Electronic","Instrumental"])})
+
                     if phase == 'train':
                         loss.backward()
                         optimizer.step()
@@ -114,6 +129,9 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25):
             acc_history[phase].append(epoch_acc.item())
 
         print()
+    #wandb.log({"confusion_matrix": wandb.plot.confusion_matrix(probs=None,y_true=labels.data, preds=preds,class_names=["Hip-Hop","Pop","Folk","Experimental","Rock","International","Electronic","Instrumental"])})
+    #wandb.log({"conf matrix":confusion_matrix})
+    #wandb.log({"conf_mat": wandb.plot.confusion_matrix(probs=None, y_true=ground_truth, preds=predictions, class_names=["Hip-Hop","Pop","Folk","Experimental","Rock","International","Electronic","Instrumental"])})
 
     time_elapsed = time.time() - since
     print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
@@ -124,6 +142,45 @@ def train_model(model, dataloaders, criterion, optimizer, num_epochs=25):
     return model, acc_history, losses
 
 
+def predict(model, dataloaders, criterion):
+
+    model.eval()
+    ground_truth = []
+    predictions = []
+    for inputs, labels in dataloaders["val"]: #unes 1600 mp3
+
+        inputs = inputs.to(device,dtype=torch.float32)
+        #inputs= inputs.to(torch.cuda.FloatTensor)
+        labels = torch.tensor(labels)
+        labels = labels.to(device,dtype=torch.long)
+
+
+        outputs = model(inputs)
+        #loss = criterion(outputs, labels)
+
+
+        _, preds = torch.max(outputs, 1)
+
+        ground_truth.extend(labels.tolist())
+        predictions.extend(preds.tolist())
+
+    wandb.log({"conf_mat": wandb.plot.confusion_matrix(probs=None, y_true=ground_truth, preds=predictions, class_names=["Hip-Hop","Pop","Folk","Experimental","Rock","International","Electronic","Instrumental"])})
+    predictions=np.array(predictions)
+    cm=confusion_matrix(ground_truth,predictions.ravel())
+    #ConfusionMatrixDisplay(cm).plot()
+
+    # get the number of classes
+    num_classes = cm.shape[0]
+
+    # calculate accuracy for each class
+    class_acc = []
+    for i in range(8):
+        class_correct = cm[i,i]
+        class_total = sum(cm[i,:])
+        class_acc.append(class_correct / class_total)
+        print("Accuracy for class ",i," :", (class_correct / class_total)," Total samples class ",class_total)
+    return ground_truth,predictions
+
 #CONGELAR PESOS PERL FEATRURE
 def set_parameter_requires_grad(model, feature_extracting):
     if feature_extracting:
@@ -131,46 +188,33 @@ def set_parameter_requires_grad(model, feature_extracting):
             param.requires_grad = False
 
 #FEATURE EXTRACTION
-def initialize_model(num_classes):
-  model = models.resnet18(pretrained=True) # Inicialitzem la ariqutectura i els paramatres pre entrenats
-  set_parameter_requires_grad(model,True) #Congelem el model perque no convvi el model
-  model.fc = nn.Linear(in_features=512, out_features=num_classes) #Creem despres de congelar la ultima capa que sera la fully conectet
-  model.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False) # canviem perque accepit 1 chanel que es el que li passem
+# def initialize_model(num_classes):
+#   model = models.resnet18(pretrained=True) # Inicialitzem la ariqutectura i els paramatres pre entrenats
+#   set_parameter_requires_grad(model,True) #Congelem el model perque no convvi el model
+#   model.fc = nn.Linear(in_features=512, out_features=num_classes) #Creem despres de congelar la ultima capa que sera la fully conectet
+#   model.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False) # canviem perque accepit 1 chanel que es el que li passem
 
-  input_size=224
-  return model,input_size
+#   input_size=224
+#   return model,input_size
 
-num_classes = 8
-# Initialize the model
-model, input_size = initialize_model(num_classes)
-
-
-  # Send the model to GPU
-model = model.to(device)
-
-# Setup the loss fxn
-criterion = nn.CrossEntropyLoss()
-
-# Number of epochs to train for 
-num_epochs = 25
-
-optimizer_ft = optim.Adam(model.parameters(), lr=0.001)
-
-# Train and evaluate
-model_feature, histFeature, lossesFeature = train_model(model, loaded_dataloader, criterion, optimizer_ft, num_epochs=num_epochs)
+# num_classes = 8
+# # Initialize the model
+# model, input_size = initialize_model(num_classes)
 
 
+#   # Send the model to GPU
+# model = model.to(device)
 
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
+# # Setup the loss fxn
+# criterion = nn.CrossEntropyLoss()
 
-ax1.plot(lossesFeature["train"], label="training loss")
-ax1.plot(lossesFeature["val"], label="validation loss")
-ax1.legend()
+# # Number of epochs to train for 
+# num_epochs = 3
 
-ax2.plot(histFeature["train"],label="training accuracy")
-ax2.plot(histFeature["val"],label="val accuracy")
-ax2.legend()
+# optimizer_ft = optim.Adam(model.parameters(), lr=0.001)
 
-plt.show()  
+# # Train and evaluate
+# model_feature, histFeature, lossesFeature = train_model(model, loaded_dataloader, criterion, optimizer_ft, num_epochs=num_epochs)
+# gt,pr=predict(model_feature,loaded_dataloader,criterion)
 
-wandb.finish()
+
