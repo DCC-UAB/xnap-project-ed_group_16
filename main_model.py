@@ -187,6 +187,7 @@ def set_parameter_requires_grad(model, feature_extracting):
         for param in model.parameters():
             param.requires_grad = False
 
+
 #FEATURE EXTRACTION
 # def initialize_model(num_classes):
 #   model = models.resnet18(pretrained=True) # Inicialitzem la ariqutectura i els paramatres pre entrenats
