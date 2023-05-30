@@ -61,6 +61,7 @@ def initialize_model(num_classes):
 model, input_size = initialize_model(num_classes)
 
 
+
   # Send the model to GPU
 model = model.to(device)
 
