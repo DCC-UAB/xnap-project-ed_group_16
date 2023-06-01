@@ -1,5 +1,4 @@
 # XNAP-16 - FMA Music Genre Classification (in PyTorch)
-Write here a short summary about your project. The text must include a short introduction and the targeted goals.
 
 Aquest projecte es una recerca desde zero per inetntar classificar archius de musica segons els seu genere a traves de l'implementació de deep learning. Per fer-ho s'utilitzara PyTorch com a llibreria principal i librosa per el tractament d'audio.
 
@@ -14,12 +13,32 @@ Els fitxers utilitzats en aquest projecte son els seguents:
 Les pistes d'audio MP3-encoded les podem trobar en el seguent lloc:
 * [``fma_small.zip``](https://os.unil.cloud.switch.ch/fma/fma_small.zip) : 8,000 pistes d'audio de 30s, 8 generes balancejats (7.2 GiB)
 
+## Codi
+El projecte conte els seguents archius notebook i py:
+1. ``main_dataloader``: Conte el codi per executar i posar en funcionament el dataloader. Seguir els passos de "com posar el projecte en funcionament" per la seva utilització.
+2. ``main_model``: Conte les funcions principals per poder realitzar l'entrenament i prediccio d'un model. 
+3. [``utils.py``](https://github.com/mdeff/fma/blob/master/utils.py): Fitxer extret del treball [``GitHub mdeff/fma``](https://github.com/mdeff/fma), conte funcions i classes per tractar els archius de metadata
+
 ## Com posar el projecte en funcionament
 Per poder reproduir el projecte s'haura de posar en funcionament la seguent infrestructura pas a pas:
 
-1. Has de crear una carpeta anomenada "data" que contindra les metadades de les cançons
+1. S'ha de crear una carpeta anomenada "data" que contindra les metadades de les cançons. (Executar dins la carpeta):
 
+  * ``curl -O https://os.unil.cloud.switch.ch/fma/fma_metadata.zip``
+  * ``unzip fma_metadata.zip`` o ``7z x fma_metadata.zip``
+    
+2. S'ha de crear una carpeta anomenda "AUDIO_DIR" que contindra les pistes de cançons MP3. (Executar dins la carpeta):
 
+  * ``curl -O https://os.unil.cloud.switch.ch/fma/fma_small.zip``
+  * ``unzip fma_small.zip`` o ``7z x fma_small.zip``
+  * ``mv 0* ../``
+  * ``mv 1* ../``
+
+3. S'han d'eliminar les sguents pistes d'audio, ja que contenen errors:
+  * ``cd 099`` + ``rm 099134.mp3``
+  * ``cd 108`` + ``rm 108925.mp3``
+  * ``cd 133`` + ``rm 133297.mp3``
+  * 
 ## Code structure
 You must create as many folders as you consider. You can use the proposed structure or replace it by the one in the base code that you use as starting point. Do not forget to add Markdown files as needed to explain well the code and how to use it.
 
