@@ -15,9 +15,12 @@ Les pistes d'audio MP3-encoded les podem trobar en el seguent lloc:
 
 ## Codi
 El projecte conte els seguents archius notebook i py:
-1. ``main_dataloader``: Conte el codi per executar i posar en funcionament el dataloader. Seguir els passos de "com posar el projecte en funcionament" per la seva utilització.
-2. ``main_model``: Conte les funcions principals per poder realitzar l'entrenament i prediccio d'un model. 
-3. [``utils.py``](https://github.com/mdeff/fma/blob/master/utils.py): Fitxer extret del treball [``GitHub mdeff/fma``](https://github.com/mdeff/fma), conte funcions i classes per tractar els archius de metadata
+1. ``main_dataloader.ipynb``: Conte el codi per executar i posar en funcionament el dataloader. Seguir els passos de "com posar el projecte en funcionament" per la seva utilització.
+2. ``main_model.py``: Conte les funcions principals per poder realitzar l'entrenament i prediccio d'un model. 
+3. [``utils_split.py``](https://github.com/mdeff/fma/blob/master/utils.py): Fitxer extret del treball [``GitHub mdeff/fma``](https://github.com/mdeff/fma), conte funcions i classes per tractar els archius de metadata
+4. ``utils_data.py``: Conte les funcions necessaries de la classe que genera el dataloader. Es necessari per poder importar el dataloader com a objecte de pickle en altres fitxers
+
+FALTEN ELS MODELS
 
 ## Com posar el projecte en funcionament
 Per poder reproduir el projecte s'haura de posar en funcionament la seguent infrestructura pas a pas:
@@ -35,10 +38,17 @@ Per poder reproduir el projecte s'haura de posar en funcionament la seguent infr
   * ``mv 1* ../``
 
 3. S'han d'eliminar les sguents pistes d'audio, ja que contenen errors:
-  * ``cd 099`` + ``rm 099134.mp3``
-  * ``cd 108`` + ``rm 108925.mp3``
-  * ``cd 133`` + ``rm 133297.mp3``
-  * 
+
+  * ``cd AUDIO_DIR/099`` + ``rm 099134.mp3``
+  * ``cd AUDIO_DIR/108`` + ``rm 108925.mp3``
+  * ``cd AUDIO_DIR/133`` + ``rm 133297.mp3``
+  
+4. Executar un sol cop el codi del seguent fitxer  
+
+  * ``main_dataloader.ipynb``
+5. Executar la resta de fitxers que no siguin de Models
+6. Executar entrenament dels fitxers de Models
+
 ## Code structure
 You must create as many folders as you consider. You can use the proposed structure or replace it by the one in the base code that you use as starting point. Do not forget to add Markdown files as needed to explain well the code and how to use it.
 
