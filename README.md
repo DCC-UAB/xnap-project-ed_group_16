@@ -23,6 +23,8 @@ El projecte conte els seguents archius notebook i py:
 FALTEN ELS MODELS
 
 ## Com posar el projecte en funcionament
+**S'ha d'utilitzar un entorn conda, i instalar les llibreries que es requereixin en els codis proporcioants.**
+
 Per poder reproduir el projecte s'haura de posar en funcionament la seguent infrestructura pas a pas:
 
 1. S'ha de crear una carpeta anomenada "data" que contindra les metadades de les cançons. (Executar dins la carpeta):
@@ -47,23 +49,25 @@ Per poder reproduir el projecte s'haura de posar en funcionament la seguent infr
 
   * ``main_dataloader.ipynb``
 5. Executar la resta de fitxers que no siguin de Models
-6. Executar entrenament dels fitxers de Models
+6. Executar els fitxers de Models on es fara l'entrenament i es podran realitzar prediccions
 
-## Code structure
-You must create as many folders as you consider. You can use the proposed structure or replace it by the one in the base code that you use as starting point. Do not forget to add Markdown files as needed to explain well the code and how to use it.
+## Metode
 
-## Example Code
-The given code is a simple CNN example training on the MNIST dataset. It shows how to set up the [Weights & Biases](https://wandb.ai/site)  package to monitor how your network is learning, or not.
+### Dataloader
+Explicar les coses fetes en el dataloader (Com carraguem les dades, spectogrames, imatges, Data augmentation ...)
+### Main Model
+Explicar com implementem les funcions de train  (dropout, lr decay ) i predict
 
-Before running the code you have to create a local environment with conda and activate it. The provided [environment.yml](https://github.com/DCC-UAB/XNAP-Project/environment.yml) file has all the required dependencies. Run the following command: ``conda env create --file environment.yml `` to create a conda environment with all the required dependencies and then activate it:
-```
-conda activate xnap-example
-```
+## Models - Analisis I Resultats
 
-To run the example code:
-```
-python main.py
-```
+Treure anilisis i resultats rollo com la presentació pero mes extens (taules comparatives etc ROC CURVE?)
+
+## Conclusions
+
+## Treball Futur / Millores
+
+## Referencies
+[1] ....
 
 
 
