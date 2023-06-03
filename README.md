@@ -59,6 +59,23 @@ Explicar les coses fetes en el dataloader (Com carraguem les dades, spectogrames
 Explicar com implementem les funcions de train  (dropout, lr decay ) i predict
 
 ## Models - Analisis I Resultats
+En aquest apartat anirem explicant els principals models que s'han provat, i les resultats obtinguts sobre els mateixos.
+
+#### ResNet50 - Primera presa de contacte 
+Per començar voliem saber quin era el nostre punt de partida, per aixó ens vam besar en una ResNet50 ja que de forma general te un rendiment bo per aquests tipus de classificació.
+
+Com a funció de loss vam utilitzar ``CrossEntropyLoss`` ja que es la mes adequada en classificació multiclass i com a funció d'optimització ``RMSProp``, ja que voliem observar els seus resultats. 
+
+| Train Loss | Val Loss |
+| ------------- | ------------- |
+|  ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/2664c425-3e74-47be-ac9a-f3c803efd206) | ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/68e2fe55-960b-40d1-ba02-fba4c7cd69b7)| 
+
+Respecte a la Loss, podem observar molta semblança entre les dades d'entrenement i test, aixo es indica que el model no presenta overfiting i per tant no s'esta adaptant practicame al conjunt de dades d'entrenament. Tot i que puguem observar algunes variacions en la loss del conjunt de validació, veiem una tendencia general la disminució a mesura que avança l'entrenament. Aixo es una bona senyal i per tant el model esta aprenent ve a generalitzar.
+
+| Train Acc | Val Acc |
+|-------------|-------------|
+|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/8764274d-251f-4b7a-894d-26c8d6d88a38)  | ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/62ec8098-c647-488a-b9d8-d7e43ae6bb31)|
+
 
 Treure anilisis i resultats rollo com la presentació pero mes extens (taules comparatives etc ROC CURVE?)
 
