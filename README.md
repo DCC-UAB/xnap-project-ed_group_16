@@ -76,6 +76,18 @@ Respecte a la Loss, podem observar molta semblança entre les dades d'entrenemen
 |-------------|-------------|
 |![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/8764274d-251f-4b7a-894d-26c8d6d88a38)  | ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/62ec8098-c647-488a-b9d8-d7e43ae6bb31)|
 
+Revisant els accuracys confirmem que no hi tenim overfiting. El que si que trobem tant en el train com en la validació, es que hi ha un estancament en la millora del acuracy dels models. Arrivant nomes a un 49,55% en el model de validació. En vista d'aquestes resultats, com s'ha mencionat en l'aparat i explicació del metode a seguir, s'implentaran diferentes estrategies per intentar abolir-ho i millorar.
+
+ __Confusing Matrix__ 
+
+![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/bf3a8ecc-6803-4a92-a5a7-31d864616c00)
+
+Observant la matriu de confusió respecte el model ResNet , es veu molt clarament com generes com Folk, HipHop o Rock tenen presicions molt elevades i son facilment classificables, en canvi d'altres com Pop o Experimental son bastant mes conflitius, ja que es confonen amb altres generes i per tant no es classifiquen correctament. Aixo es podria deure a la gran quantitat de diversitat i variacions que es solen trobar en aquests generes. Generes com els primers mencionats mantenen uns patrons molt propis del genere i facilment identificables. 
+
+#### ResNet50 vs EfficentNet
+
+#### EfficentNet - Millor Model
+
 
 Treure anilisis i resultats rollo com la presentació pero mes extens (taules comparatives etc ROC CURVE?)
 
