@@ -128,7 +128,7 @@ En els dos models observem unes funcions loss molt similars que sembla que encar
 
 Respecte a les accuracy dels models, tambe hi trobem un comportament molt similar, amb una mica d'overfitting en el model que utilitza ``DA``, pero practicament insignificant. Tot i aixo el model sense ``DA`` arriva a la maxima accuracy aconseguida, sent aquesta d'un **57,89%**. Aixo es deu a que el ``DA`` no esta tenint un afecte real l'hora de que apendre a classificar millor entre eles generes, com ja haviem vist en la ResNet50. 
 
- __Confusing Matrix EffientNet __ 
+ __Confusing Matrix__ EffientNet
  
  ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/a82be60a-a7e1-4029-b17d-34d3b998ddbd)
 
@@ -147,19 +147,20 @@ Com a conclusions de l'article volem comentar 3 temes principals:
 3. Fent una recerca d'altres treballs on també es fes classificació de generes de musica a traves d'espectogrames i fent l'utilització del dataset d'FMA SMALL, s'ha vist que els seus millors resultats son:
 
  * [``GitHub mdeff/fma``](https://github.com/mdeff/fma/): **17,60%**
- * [`` GitHub yijerjer/music_genre_classification``](https://github.com/yijerjer/music_genre_classification/blob/master/README.md): **46,70%**
+ * [``GitHub yijerjer/music_genre_classification``](https://github.com/yijerjer/music_genre_classification/blob/master/README.md): **46,70%**
 
  Per tant creiem que el nostre article ha arrivat a uns bons resultats.
 
 
 ## Referencies
 [1] https://github.com/mdeff/fma/
+
 [2] https://github.com/yijerjer/music_genre_classification/blob/master/README.md
 
 ## Contributors
-Sergi Tordera - 1608676@uab.cat | 
-Txell Monedero                  |
-Aina Polo
+* Sergi Tordera - 1608676@uab.cat
+* Txell Monedero                  
+* Aina Polo
 
 Xarxes Neuronals i Aprenentatge Profund
 Grau de __Data Engineering__, 
