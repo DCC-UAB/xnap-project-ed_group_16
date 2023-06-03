@@ -95,7 +95,7 @@ L'estrategia mencionada es va decidir aplicar en dos arquitectures de FeatureExt
 |Train Loss|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/5f0cc400-f8a1-4525-a52d-df0f8d2f271b) |![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/29dd8bb7-9374-4588-aa1c-91469fe26fe8)|
 |Val Loss|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/8343639d-46ee-442d-a95e-9f76dde284d2) |![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/0874f7b5-e5d3-4ca1-8023-32bd9bb13ecf)|
 
-Es pot obersevar com en la loss de la ResNet50 la baixada en el train ja no es tant progresiva com avans i en la validació presenta pics de pujada durant la disminució, aixo podem començar a ser sinmptomes de que el model esta tenint oberfitting, un altre paramatre que ho reforcaria, seria que el train també esta arrivant a una loss mes baixa que la validació. En la loss del model d'EfficientNet veiem una disminusió molt gran en el train, arrivant practicament a 0 i en la validació un augment, aixo es una molt clara indicació d'overfiting ja que el model s'esta adpatant molt a les dades d'entrenament i no es capaç de classificar la validació. Aixo creiem que es pot deure ja que el Model de EfficentNet al recollir menys carecteristiques, pero tenir mes capes, s'adapti massa a aquelles carcerctersitiques d
+Es pot obersevar com en la loss de la ResNet50 la baixada en el train ja no es tant progresiva com avans i en la validació presenta pics de pujada durant la disminució, aixo podem començar a ser sinmptomes de que el model esta tenint oberfitting, un altre paramatre que ho reforcaria, seria que el train també esta arrivant a una loss mes baixa que la validació. En la loss del model d'EfficientNet veiem una disminusió molt gran en el train, arrivant practicament a 0 i en la validació un augment, aixo es una molt clara indicació d'overfiting ja que el model s'esta adpatant molt a les dades d'entrenament i no es capaç de classificar la validació. Aixo creiem que es pot deure ja que el Model de EfficentNet al recollir menys carecteristiques, pero tenir mes capes, s'adapti massa a aquelles carcerctersitiques d'entrenament. En canvi ResNet al agafar mes carecteristiques apren a generelaitzar millor.
 
 |   | ResNet50 | EfficientNet |
 |---|-------------|-------------|
@@ -103,8 +103,14 @@ Es pot obersevar com en la loss de la ResNet50 la baixada en el train ja no es t
 |Val Acc| ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/0ace934e-0a2b-45b9-b2ef-d30487dc2ef9)|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/1e8cbfc0-5e92-498a-83d3-16725710be81)
  |
 
+En referencia als accuracys, veiem com en al ResNet no hem obtingut gaire millora respecte al seu model anterior, on ara aconseguim un **50,87%** d'accuracy, senyal de que tot i amb el **Data Augmentation** i el **Learning Rate Decay** el model ja no es capaç de millorar gaire mes. Per altre banda el model d'EfficientNet presenta un oberffiting massium com suposavem. Tot i aixó en vista de que l'acurracy de validació es el mes alt aconseguit fins el moment (un **54,85%**) i que encara teniem marge de millora treien l'overffiting, vem decidir continuar per aquest cami.
 
 #### EfficentNet - Millor Model
+
+En vista de l'overffitng que presentava el model d'EfficientNet i que voliem eliminar, vem decidir implemnetar un DropOut (*tal i com en el Learning Rate Decay, la implementació del DropOut esta explicada en l'apartat de Metode*), aquesta tecnica consisteix en apagar algunes de les neurones de la capa congelada amb una probabilitat del 50%, per d'aquesta manera evitar que el model s'adapti molt a les dades d'entrenemnet i aixi poder evitar l'overfitting.
+
+Com a resultat de que l'utilització de **Data Augmentation** no va ser un factor direferncial en la ResNet vem decidir probar dos model nous en EfficientNet treient l'overfting com hem comentat, i on un utilitzaria el dataset amb **Data Augmentation** i l'altre sense. Comentar també que es va seguir mantenint el **Learning Rate Decay**.
+
 
 
 Treure anilisis i resultats rollo com la presentació pero mes extens (taules comparatives etc ROC CURVE?)
