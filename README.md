@@ -49,7 +49,7 @@ Per poder reproduir el projecte s'haura de posar en funcionament la seguent infr
 
   * ``main_dataloader.ipynb``
 5. Executar la resta de fitxers que no siguin de Models
-6. Executar els fitxers de Models on es fara l'entrenament i es podran realitzar prediccions
+6. Executar els fitxers de Models on es fara l'entrenament i es podran realitzar prediccions amb la funció predict
 
 ## Metode
 
