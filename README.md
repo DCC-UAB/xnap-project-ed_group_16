@@ -92,10 +92,10 @@ L'estrategia mencionada es va decidir aplicar en dos arquitectures de FeatureExt
 
 |   | ResNet50 | EfficientNet |
 |---|-------------|-------------|
-|Train Loss| | |
-|Val Loss| | |
+|Train Loss|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/5f0cc400-f8a1-4525-a52d-df0f8d2f271b) |![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/29dd8bb7-9374-4588-aa1c-91469fe26fe8)|
+|Val Loss|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/8343639d-46ee-442d-a95e-9f76dde284d2) |![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/0874f7b5-e5d3-4ca1-8023-32bd9bb13ecf)|
 
-Explicacio
+Es pot obersevar com en la loss de la ResNet50 la baixada en el train ja no es tant progresiva com avans i en la validació presenta pics de pujada durant la disminució, aixo podem començar a ser sinmptomes de que el model esta tenint oberfitting, un altre paramatre que ho reforcaria, seria que el train també esta arrivant a una loss mes baixa que la validació. En la loss del model d'EfficientNet veiem una disminusió molt gran en el train, arrivant practicament a 0 i en la validació un augment, aixo es una molt clara indicació d'overfiting ja que el model s'esta adpatant molt a les dades d'entrenament i no es capaç de classificar la validació. Aixo creiem que es pot deure ja que el Model de EfficentNet al recollir menys carecteristiques, pero tenir mes capes, s'adapti massa a aquelles carcerctersitiques d
 
 |   | ResNet50 | EfficientNet |
 |---|-------------|-------------|
