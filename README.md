@@ -76,15 +76,33 @@ Respecte a la Loss, podem observar molta semblança entre les dades d'entrenemen
 |-------------|-------------|
 |![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/8764274d-251f-4b7a-894d-26c8d6d88a38)  | ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/62ec8098-c647-488a-b9d8-d7e43ae6bb31)|
 
-Revisant els accuracys confirmem que no hi tenim overfiting. El que si que trobem tant en el train com en la validació, es que hi ha un estancament en la millora del acuracy dels models. Arrivant nomes a un 49,55% en el model de validació. En vista d'aquestes resultats, com s'ha mencionat en l'aparat i explicació del metode a seguir, s'implentaran diferentes estrategies per intentar abolir-ho i millorar.
+Revisant els accuracys confirmem que no hi tenim overfiting. El que si que trobem tant en el train com en la validació, es que hi ha un estancament en la millora del acuracy dels models. Arrivant nomes a un **49,55%** en el model de validació. En vista d'aquestes resultats, com s'ha mencionat en l'aparat i explicació del metode a seguir, s'implentaran diferentes estrategies per intentar abolir-ho i millorar.
 
  __Confusing Matrix__ 
 
 ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/bf3a8ecc-6803-4a92-a5a7-31d864616c00)
 
-Observant la matriu de confusió respecte el model ResNet , es veu molt clarament com generes com Folk, HipHop o Rock tenen presicions molt elevades i son facilment classificables, en canvi d'altres com Pop o Experimental son bastant mes conflitius, ja que es confonen amb altres generes i per tant no es classifiquen correctament. Aixo es podria deure a la gran quantitat de diversitat i variacions que es solen trobar en aquests generes. Generes com els primers mencionats mantenen uns patrons molt propis del genere i facilment identificables. 
+Observant la matriu de confusió respecte el model ResNet , es veu molt clarament com generes com **Folk, HipHop o Rock** tenen presicions molt elevades i son facilment classificables, en canvi d'altres com **Pop o Experimental** son bastant mes conflitius, ja que es confonen amb altres generes i per tant no es classifiquen correctament. Aixo es podria deure a la gran quantitat de diversitat i variacions que es solen trobar en aquests generes. Generes com els primers mencionats mantenen uns patrons molt propis del genere i facilment identificables. 
 
 #### ResNet50 vs EfficentNet
+
+En vista del punt de partida, on teniem un **49,55%** d'accuracy i tant el model de train com de test es quedaven estancats i no milloraven, es va decidir ara ya implementar l'estrategia d'utilitzar un **Learning Rate Decay** per inentar que el model convergis milloar al quedarse estancat, i d'aquesta forma intentar arrivar a un accuracy mes elevat (*Es pot veure l'esspecificació d'implementacio del lr decay en l'apartat de metode*). Es va fer us també del dataset que contenia **Data Augementation**, per intentar que el model al tenir mes dades pugues extreure mes carecteristiques i classificar millor.
+
+L'estrategia mencionada es va decidir aplicar en dos arquitectures de FeatureExtraction diferents. Com poden ser la ResNet50 que ja veniem utilitzant i una arquitectura EfficentNetB0. La diferencia principal entre elles es que la ResNet50 conte 50 capes, pero extreu mes carecteristiques de les dades d'entrada. En canvi la EfficentNetB0 conte 224 capes, pero es una red mes compacta que no agafa tantes carectersitques de les dades d'entrada.
+
+|   | ResNet50 | EfficientNet |
+|---|-------------|-------------|
+|Train Loss| | |
+|Val Loss| | |
+
+Explicacio
+
+|   | ResNet50 | EfficientNet |
+|---|-------------|-------------|
+|Train Acc|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/4908d166-059b-4e77-bd4f-f6a93f395844) |![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/be1ffdd4-d54d-4b82-98c6-4c673015284f) |
+|Val Acc| ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/0ace934e-0a2b-45b9-b2ef-d30487dc2ef9)|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/1e8cbfc0-5e92-498a-83d3-16725710be81)
+ |
+
 
 #### EfficentNet - Millor Model
 
