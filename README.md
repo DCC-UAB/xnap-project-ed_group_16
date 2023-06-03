@@ -1,62 +1,106 @@
 # XNAP-16 - FMA Music Genre Classification (in PyTorch)
 
-Aquest projecte es una recerca desde zero per inetntar classificar archius de musica segons els seu genere a traves de l'implementació de deep learning. Per fer-ho s'utilitzara PyTorch com a llibreria principal i librosa per el tractament d'audio.
+Aquest projecte és una recerca des de zero per intentar classificar arxius de música segons el seu gènere a través de la implementació de deep learning. Per fer-ho s'ha fet servir PyTorch com a llibreria principal i librosa pel tractament d'àudio.
 
 ## Data - FMA
-Per aquest projecte estarem utilitzant les dades de FMA, en concret la seva versió mes reduida anomenada FMA SMALL i les seves metadades FMA METADATA.
+Per aquest projecte estarem utilitzant les dades de FMA, en concret la seva versió més reduïda anomenada FMA SMALL i les seves metadades FMA METADATA.
 
-Totes les metadades i caracteristiques de les pistes d'audio es poden trobar a [``fma_metadata.zip``](https://os.unil.cloud.switch.ch/fma/fma_metadata.zip) (342 MiB).
-Els fitxers utilitzats en aquest projecte son els seguents:
+Totes les metadades i característiques de les pistes d'àudio es poden trobar a [''fma_metadata.zip''](https://os.unil.cloud.switch.ch/fma/fma_metadata.zip) (342 MiB).
+Els fitxers utilitzats en aquest projecte són els següents:
 
-* ``tracks.csv``: Metadades per cada track tal com id,title,genres,artist ...
+* ``tracks.csv``: Metadades per cada track tal com id, title, genres, artist ...
 
 Les pistes d'audio MP3-encoded les podem trobar en el seguent lloc:
 * [``fma_small.zip``](https://os.unil.cloud.switch.ch/fma/fma_small.zip) : 8,000 pistes d'audio de 30s, 8 generes balancejats (7.2 GiB)
 
 ## Codi
-El projecte conte els seguents archius notebook i py:
-1. ``main_dataloader.ipynb``: Conte el codi per executar i posar en funcionament el dataloader. Seguir els passos de "com posar el projecte en funcionament" per la seva utilització.
-2. ``main_model.py``: Conte les funcions principals per poder realitzar l'entrenament i prediccio d'un model. 
-3. [``utils_split.py``](https://github.com/mdeff/fma/blob/master/utils.py): Fitxer extret del treball [``GitHub mdeff/fma``](https://github.com/mdeff/fma), conte funcions i classes per tractar els archius de metadata
-4. ``utils_data.py``: Conte les funcions necessaries de la classe que genera el dataloader. Es necessari per poder importar el dataloader com a objecte de pickle en altres fitxers
+El projecte conté els següents arxius *ipynb* i *py*:
+1. ``main_dataloader.ipynb``: Conté el codi per executar i posar en funcionament el dataloader. Seguir els passos de "com posar el projecte en funcionament" per la seva utilització.
+2. ``main_model.py``: Conté les funcions principals per poder realitzar l'entrenament i predicció d'un model. 
+3. [``utils_split.py``](https://github.com/mdeff/fma/blob/master/utils.py): Fitxer extret del treball [``GitHub mdeff/fma``](https://github.com/mdeff/fma), conte funcions i classes per tractar els arxius de metadata.
+4. ``utils_data.py``: Conté les funcions necessàries de la classe que genera el dataloader. És necessari per poder importar el dataloader com a objecte de *pickle* en altres fitxers.
 
 FALTEN ELS MODELS
 
 ## Com posar el projecte en funcionament
-**S'ha d'utilitzar un entorn conda, i instalar les llibreries que es requereixin en els codis proporcioants.**
+**S'ha d'utilitzar un entorn *conda*, i *instalar* les llibreries que es requereixin en els codis proporcioants.**
 
-Per poder reproduir el projecte s'haura de posar en funcionament la seguent infrestructura pas a pas:
+Per poder reproduir el projecte s'haurà de posar en funcionament la següent infraestructura  pas a pas:
 
-1. S'ha de crear una carpeta anomenada "data" que contindra les metadades de les cançons. (Executar dins la carpeta):
+1. S'ha de crear una carpeta anomenada "data" que contindrà les metadades de les cançons. (Executar dins la carpeta):
 
   * ``curl -O https://os.unil.cloud.switch.ch/fma/fma_metadata.zip``
   * ``unzip fma_metadata.zip`` o ``7z x fma_metadata.zip``
     
-2. S'ha de crear una carpeta anomenda "AUDIO_DIR" que contindra les pistes de cançons MP3. (Executar dins la carpeta):
+2. S'ha de crear una carpeta anomenda ``AUDIO_DIR`` que contindra les pistes de cançons MP3. (Executar dins la carpeta):
 
   * ``curl -O https://os.unil.cloud.switch.ch/fma/fma_small.zip``
   * ``unzip fma_small.zip`` o ``7z x fma_small.zip``
   * ``mv 0* ../``
   * ``mv 1* ../``
 
-3. S'han d'eliminar les sguents pistes d'audio, ja que contenen errors:
+3. S'han d'eliminar les següents pistes d'àudio, ja que contenen errors:
 
   * ``cd AUDIO_DIR/099`` + ``rm 099134.mp3``
   * ``cd AUDIO_DIR/108`` + ``rm 108925.mp3``
   * ``cd AUDIO_DIR/133`` + ``rm 133297.mp3``
   
-4. Executar un sol cop el codi del seguent fitxer  
+4. Executar un sol cop el codi del següent fitxer:
 
   * ``main_dataloader.ipynb``
 5. Executar la resta de fitxers que no siguin de Models
-6. Executar els fitxers de Models on es fara l'entrenament i es podran realitzar prediccions amb la funció predict
+6. Executar els fitxers de Models on es farà l'entrenament i es podran realitzar prediccions amb la funció ``predict()``
 
-## Metode
+## Mètode
 
 ### Dataloader
-Explicar les coses fetes en el dataloader (Com carraguem les dades, spectogrames, imatges, Data augmentation ...)
+La base de dades ([``fma_small.zip``](https://os.unil.cloud.switch.ch/fma/fma_small.zip)) amb la que s’ha treballat conforma d’un total de 8.000 MP3 repartits entre 8 classes balancejades. Les dades es troben guardades en el directori ``AUDIO_DIR`` on dins hi ha 156 carpetes amb diferents mp3. Els noms d’aquestes són números del 000 al 155.
+Per generar csv ``data/train_labels.csv``, s’ha fet servir el fitxer ``data/fma_metadata/tracks.csv`` que per la seva lectura s’ha cridat a la funció load de l’arxiu ``utils_split.py``. Aquest csv generat conté els identificadors de les cançons i les seves respectives classes identificades amb un número. Les correspondències són:
+
+- Hip-Hop: 0
+- Pop: 1
+- Folk: 2
+- Experimental: 3
+- Rock: 4
+- International: 5
+- Electronic: 6
+- Instrumental:7 
+
+El directori on es troba el split train i test s’anomena ``AUDIO_DIR_SPLIT``. El repartiment que s’ha fet és de 80/20 agafant les cançons de forma aleatòria. Dins de cada directori test o train hi ha 156 carpetes i dins d’aquestes 80% o 20% de les cançons. La ruta per accedir a una cançó és: *“AUDIO_DIR_SPLIT/train/num_carpeta/cançó.mp3”*.
+
+Per la realtzacó del projecte s’ha treballat amb imatges, és per això que tots els MP3 s’han passat a espectrograma i després a imatge. Per la primera transformació s’ha definit la funció ``get_melspectrogram_db_2()`` que reb com a paràmetre la ruta de la cançó. De cada mp3 s’agafen els 10 primers segons i aquests es resamplegen a un sampling rate de 22050 mostres per segon. D’aquesta manera totes les imatges que es generen tenen la mateixa mida. Sobre aquestes es calcula el STFT (Transformada de Fourier de Temps Curt) per obtenir una representació de les diferents amplituds de les frequences de l'audio al llarg del temps. Finalment es calcula l’espectograma mel i es passa a decbels. Es fa ús d’aquest tipus d’espectograma perquè descarta les freqüències més altes, les que els humans no podem escoltar, i així aconseguir la representació de com nosaltres escoltaríem els mp3.
+
+Per passar de les representacions espectrals a imatges s’ha desenvolupat una segona funció ``spec_to_image()``. En aquesta funció es pren una matriu d’espectro com a entrada i es calcula la mitjana i la desviació estàndard de la matriu per normalitzar-la restant-li la mitjana i dividint el resultat entre la desviació estàndard més un petit valor per evitar divisions entre zeros. A continuació, es calculen el valor màxim i mínim de la matriu normalitzada per redimensionar el valor d’aquesta al rang de 0 a 255 per convertir els valors a l’escala de colors d’una imatge de 8 bits.
+
+Un cop definides les funcions pertinents, s’ha generat la classe ``GenerateDataloader()``. Aquesta s’encarrega de fer la crida a les funcions anteriors, generar les imatges i guardar l’etiqueta corresponent al gènere de cadascuna de les cançons utilitzant el dataframe ``train_labels.csv``, on es tenen els gèneres corresponents a cada cançó.
+
+Amb això s’han realitzat dos data loaders, un amb les 8.000 dades i un fent data augmentation amb un total de 12.000 cançons. 
+
+Pel que fa al dataloader amb **data augmentation**, s’ha desenvolupat una nova funció ``get_melspectrogram_db_volum()``, amb la mateixa funció que la ``get_melspectrogram_db()`` per passar els fitxers mp3 a espectogrames mel. En aquest nova funció es passa per paràmetre una nova variable *volum* amb la qual s’indica si es vol pujar, multiplicant la representació espectral mel per 1.5, o baixar el volum, multiplicant la representació espectral mel per 0.5. 
+
+Així mateix, s’ha definit una segona funció ``spec_to_image_noise()`` per passar les representacions espectrals a imatges, molt semblant a la funció ``spec_to_image()``,  però en aquest cas afegint soroll gaussià a la imatge. Aquesta funció genera una matriu de la mateixa dimensió que la imatge amb valors aleatoris extrets d’una distribució gaussiana amb una mitja de 0 i una desviació estàndard de 0.1.
+
+En el cas de voler utilitzar el data augmentation, es genera el dataloader amb la funció ``GenerateDataloader()`` passant per paràmetre el percentatge de dades noves que es vol gener, en aquest cas 40%. D’aquest manera es generen tants files mp3 nous de com s’hagi indicat. En aquest cas, el 50% es veurien modificats canviant el volum i la resta afegint soroll utilitzant les funcions pertinents. 
+
 ### Main Model
-Explicar com implementem les funcions de train  (dropout, lr decay ) i predict
+Per aquest projecte s'ha fer ús del transfer learning degut a la seva eficacia en la classificació d’imatges. El transfer learning consisteix en utilitzar un model preentrenat per extreure característiques significatives de les imatges. Per tant, dins la funció ``initialize_model()`` per inicialitzar el model segons l’arquitectura desitjada i els paràmetres preentrenats. 
+
+Donat que hi ha un nombre limitat de classes i poques dades disponibles per entrenar el model s’ha decidit fer ús del feature extraction. Tanmatex, s’ha generat una funció ``set_parameter_requires_grad()`` per canviar l’atribut *requires_grad* a *False* per cadascun dels paràmetre de la xarxa. Aquest atribut indica si s’han de calcular i emmagatzemar els gradients per als paràmetres durant el backpropagation.
+
+Continuant amb la inicialització del model, es congelen aquests paràmetres amb la funció ``set_parameter_requires_grad()`` mencionada i es modifica l’última capa fully connected perquè coincideixi amb el número de classes. Es defineix aquest capa com a capa lineal que transforma les característiques d’entrada en sortides que representen les probabilitats de les diferents classes fa servir. S’utilitza la funció d’activació softmax que produeix probabilitats normalitzades per classe.
+
+Per últim, s’ha modificat la primera capa convolucional perquè accepti imatges amb un sol canal, ja que aquestes es troben en escala de grisos. Entre altres coses, es determina la mida del filtre (7x7) i  el desplaçament en cada direcció (2x2).
+
+Un cop inicialitzats els models, s’ha desenvolupat una funció ``train_model()``, per entrenar els diferents models implementats passant per paràmetre el model, el dataloader generat anteriorment, la funció de la loss, la funció d’optimització, el nombre d’èpoques, el learning rate i si es vol canviar el learning rate durant l’entrenament. En aquesta funció s’ha anat iterant fins al nombre total d’èpoques. Per cada època s’ha configurat el model com a ``train()`` si estava a la fase d’entrenament o com a ``eval()`` si estava a la fase de validació.
+
+Seguidament, s’iteren les dades i es genera un tensor per les etiquetes referents a cada cançó. Es restableixen els gradients dels paràmetres a 0 per evitar acumulacions que puguin generar actualitzacions incorrectes. En el cas d’estar a la fase d’entrenament s’aplica el càlcul de gradient. S’obtenen els valors de sortida a partir de les dades d’entrada, es calcula la loss comparant la sortida del model amb les etiquetes reals i es guarda al llistat de les pèrdues a la fase pertanyent. En aquest cas amb la funció  la *Cross Entropy Loss* perquè és una tècnica utilitzada normalment per la classificació multiclasse. Per últim, es realitza el backpropagation i s’actualitzem els paràmetres del model utilitzant la funció d’optimització passada per paràmetre. De primer l’algorisme ``RSMProp()``, però finalment s’usa l'algorisme ``Adam()`` perquè donava millors resultats. 
+
+Finalment, es calcula la mitjana de la loss i l’accuracy representatius de l’època, es registren aquestes mètricas a la web wandb i es guarda el model amb millor resultat obtingut.
+
+En el moment que el model mostrava una estabilització  de l’accuracy a mesura que avançava l’entrenament, es va decidir modificar el learning rate a un adaptatiu, en aquest cas el learning rate decay. Per a fer ús d’aquesta tècnica s’ha de passar per paràmetre la variable ``change_lr = True``. D’aquesta manera, a l’inici de cada època es fa un crida a la funció ``lr_decay()``.
+
+Per últim, s’ha definit una funció ``predict()`` que rep com a paràmetres el model ja entrenat, el data loader i la funcó de loss utilitzada. En aquesta es posa el model en mode eval i s’itera sobre les dades de validaton del data loader. Per cada una d’elles es calcula la predicció que retorna el model agafant l'etiqueta amb major probabilitat. Un cop fetes les prediccions, es calculen les mètriques triades com a mètode d'avaluació dels resultats: la matriu de confusió i l’accuracy de cada classe (el valor de la loss també és una mètrica feta servir per l'avaluació, però aquesta és calculada durant l’entrenament). Com a resultat es retorna el groud truth (etiquetes correctes) i les labels predites.
+
 
 ## Models - Analisis I Resultats
 En aquest apartat anirem explicant els principals models que s'han provat, i les resultats obtinguts sobre els mateixos.
@@ -159,8 +203,8 @@ Com a conclusions de l'article volem comentar 3 temes principals:
 
 ## Contributors
 * Sergi Tordera - 1608676@uab.cat
-* Txell Monedero                  
-* Aina Polo
+* Txell Monedero - 1599263@uab.cat                
+* Aina Polo - 1603334@uab.cat
 
 Xarxes Neuronals i Aprenentatge Profund
 Grau de __Data Engineering__, 
