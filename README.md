@@ -19,8 +19,8 @@ El projecte conté els següents arxius *ipynb* i *py*:
 2. ``main_model.py``: Conté les funcions principals per poder realitzar l'entrenament i predicció d'un model. 
 3. [``utils_split.py``](https://github.com/mdeff/fma/blob/master/utils.py): Fitxer extret del treball [``GitHub mdeff/fma``](https://github.com/mdeff/fma), conte funcions i classes per tractar els arxius de metadata.
 4. ``utils_data.py``: Conté les funcions necessàries de la classe que genera el dataloader. És necessari per poder importar el dataloader com a objecte de *pickle* en altres fitxers.
+5. ``dels (cada un amb el seu nom corresponent ) ``: Contenen la incialització dels models que volem entrenar.
 
-FALTEN ELS MODELS
 
 ## Com posar el projecte en funcionament
 **S'ha d'utilitzar un entorn *conda*, i *instalar* les llibreries que es requereixin en els codis proporcioants.**
@@ -52,6 +52,18 @@ Per poder reproduir el projecte s'haurà de posar en funcionament la següent in
 6. Executar els fitxers de Models on es farà l'entrenament i es podran realitzar prediccions amb la funció ``predict()``
 
 ## Mètode
+Per aquest projecte s'ha fer ús del transfer learning degut a la seva eficàcia en la classificació d’imatges. El transfer learning consisteix en utilitzar un model pre entrenat per extreure característiques significatives de les imatges, i així poderles classificar en el nombre de classes que es desitja. Donat que hi ha un nombre limitat de classes i poques dades disponibles per entrenar el model, s’ha decidit fer ús del feature extraction, ja que no ens interessa canviar el pesos de les neurones del model. A consequència , s’ha generat una funció ``set_parameter_requires_grad()`` per canviar l’atribut *requires_grad* a *False* per cadascun dels paràmetre de la xarxa. Aquest atribut indica si s’han de calcular i emmagatzemar els gradients per als paràmetres durant el backpropagation. En el aquest cas, no ens interessa.
+
+L’utiltzació de feature extraction s’ha fet principalment a través de dues arquitectures que funcionen be en classificació d’imatges. Aquestes son ResNet50 i EffientNetB0
+
+
+La diferència principal entre elles és que la ResNet50 conte 50 capes, però extreu més característiques de les dades d'entrada. En canvi, la EfficentNetB0 conté 224 capes, però és una xarxa més compacta que no agafa tantes característiques de les dades d'entrada. D'aquesta manera es tenen dues arquitectures amb funcionament diferents i es pot observar els resultats per veure quina aconsegueix la millor classificació. Es poden veure les arquitectures pertinents a continuació:
+
+**Arquitectura ResNet50**
+![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/d134efc2-5561-40c2-8d0d-8d8edc78d132)
+
+**Arquitectura EfficientNetB0**
+![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/342e604a-73cc-4a14-b1bf-54ef53d3fde6)
 
 ### Dataloader
 La base de dades ([``fma_small.zip``](https://os.unil.cloud.switch.ch/fma/fma_small.zip)) amb la que s’ha treballat conforma d’un total de 8.000 MP3 repartits entre 8 classes balancejades. Les dades es troben guardades en el directori ``AUDIO_DIR`` on dins hi ha 156 carpetes amb diferents mp3. Els noms d’aquestes són números del 000 al 155.
@@ -81,22 +93,25 @@ Així mateix, s’ha definit una segona funció ``spec_to_image_noise()`` per pa
 
 En el cas de voler utilitzar el data augmentation, es genera el dataloader amb la funció ``GenerateDataloader()`` passant per paràmetre el percentatge de dades noves que es vol gener, en aquest cas 40%. D’aquest manera es generen tants files mp3 nous de com s’hagi indicat. En aquest cas, el 50% es veurien modificats canviant el volum i la resta afegint soroll utilitzant les funcions pertinents. 
 
-### Main Model
-Per aquest projecte s'ha fer ús del transfer learning degut a la seva eficacia en la classificació d’imatges. El transfer learning consisteix en utilitzar un model preentrenat per extreure característiques significatives de les imatges. Per tant, dins la funció ``initialize_model()`` per inicialitzar el model segons l’arquitectura desitjada i els paràmetres preentrenats. 
+### Fitxers models
+Per estructura de implementació es va decidir que tots els models s'implementarien en fitxers diferents, aquests imporatrien el fitxer ``Main Model`` que s'explicara a continuació per poder fer les crides a les funcions encessaries tant per fer els entrenaments com per fer les prediccions.
 
-Donat que hi ha un nombre limitat de classes i poques dades disponibles per entrenar el model s’ha decidit fer ús del feature extraction. Tanmatex, s’ha generat una funció ``set_parameter_requires_grad()`` per canviar l’atribut *requires_grad* a *False* per cadascun dels paràmetre de la xarxa. Aquest atribut indica si s’han de calcular i emmagatzemar els gradients per als paràmetres durant el backpropagation.
+Dins d'aquets fitxers es fara la incialització dels models, fent us de la funció ``initialize_model()`` segons l'arquitectura destijada i utilitzant el paramatres preentreants.
 
 Continuant amb la inicialització del model, es congelen aquests paràmetres amb la funció ``set_parameter_requires_grad()`` mencionada i es modifica l’última capa fully connected perquè coincideixi amb el número de classes. Es defineix aquest capa com a capa lineal que transforma les característiques d’entrada en sortides que representen les probabilitats de les diferents classes fa servir. S’utilitza la funció d’activació softmax que produeix probabilitats normalitzades per classe.
 
 Per últim, s’ha modificat la primera capa convolucional perquè accepti imatges amb un sol canal, ja que aquestes es troben en escala de grisos. Entre altres coses, es determina la mida del filtre (7x7) i  el desplaçament en cada direcció (2x2).
 
-Un cop inicialitzats els models, s’ha desenvolupat una funció ``train_model()``, per entrenar els diferents models implementats passant per paràmetre el model, el dataloader generat anteriorment, la funció de la loss, la funció d’optimització, el nombre d’èpoques, el learning rate i si es vol canviar el learning rate durant l’entrenament. En aquesta funció s’ha anat iterant fins al nombre total d’èpoques. Per cada època s’ha configurat el model com a ``train()`` si estava a la fase d’entrenament o com a ``eval()`` si estava a la fase de validació.
+Per últim, només faltarà escollir la funció d'optimització i de la loss i cridar a les funcions d'entrenament passant els paràmetres que es desitgen.
+
+### Main Model
+Sha desenvolupat una funció ``train_model()``, per entrenar els diferents models implementats passant per paràmetre el model, el dataloader generat anteriorment, la funció de la loss, la funció d’optimització, el nombre d’èpoques, el learning rate i si es vol canviar el learning rate durant l’entrenament. En aquesta funció s’ha anat iterant fins al nombre total d’èpoques. Per cada època s’ha configurat el model com a ``train()`` si estava a la fase d’entrenament o com a ``eval()`` si estava a la fase de validació.
 
 Seguidament, s’iteren les dades i es genera un tensor per les etiquetes referents a cada cançó. Es restableixen els gradients dels paràmetres a 0 per evitar acumulacions que puguin generar actualitzacions incorrectes. En el cas d’estar a la fase d’entrenament s’aplica el càlcul de gradient. S’obtenen els valors de sortida a partir de les dades d’entrada, es calcula la loss comparant la sortida del model amb les etiquetes reals i es guarda al llistat de les pèrdues a la fase pertanyent. En aquest cas amb la funció  la *Cross Entropy Loss* perquè és una tècnica utilitzada normalment per la classificació multiclasse. Per últim, es realitza el backpropagation i s’actualitzem els paràmetres del model utilitzant la funció d’optimització passada per paràmetre. De primer l’algorisme ``RSMProp()``, però finalment s’usa l'algorisme ``Adam()`` perquè donava millors resultats. 
 
 Finalment, es calcula la mitjana de la loss i l’accuracy representatius de l’època, es registren aquestes mètricas a la web wandb i es guarda el model amb millor resultat obtingut.
 
-En el moment que el model mostrava una estabilització  de l’accuracy a mesura que avançava l’entrenament, es va decidir modificar el learning rate a un adaptatiu, en aquest cas el learning rate decay. Per a fer ús d’aquesta tècnica s’ha de passar per paràmetre la variable ``change_lr = True``. D’aquesta manera, a l’inici de cada època es fa un crida a la funció ``lr_decay()``.
+En el moment que el model mostrava una estabilització  de l’accuracy a mesura que avançava l’entrenament, es va decidir modificar el learning rate a un adaptatiu, en aquest cas el learning rate decay. Per a fer ús d’aquesta tècnica s’ha de passar per paràmetre la variable ``change_lr = True``. D’aquesta manera, a l’inici de cada època es fa un crida a la funció ``lr_decay()``que hem implementat. Aquesta funció redueix cada 10 èpoques el learning rate en una décima, per tant es defineix el nou learning rate i es torna a crear optimitzador.
 
 Per últim, s’ha definit una funció ``predict()`` que rep com a paràmetres el model ja entrenat, el data loader i la funcó de loss utilitzada. En aquesta es posa el model en mode eval i s’itera sobre les dades de validaton del data loader. Per cada una d’elles es calcula la predicció que retorna el model agafant l'etiqueta amb major probabilitat. Un cop fetes les prediccions, es calculen les mètriques triades com a mètode d'avaluació dels resultats: la matriu de confusió i l’accuracy de cada classe (el valor de la loss també és una mètrica feta servir per l'avaluació, però aquesta és calculada durant l’entrenament). Com a resultat es retorna el groud truth (etiquetes correctes) i les labels predites.
 
