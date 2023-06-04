@@ -101,44 +101,44 @@ En el moment que el model mostrava una estabilització  de l’accuracy a mesura
 Per últim, s’ha definit una funció ``predict()`` que rep com a paràmetres el model ja entrenat, el data loader i la funcó de loss utilitzada. En aquesta es posa el model en mode eval i s’itera sobre les dades de validaton del data loader. Per cada una d’elles es calcula la predicció que retorna el model agafant l'etiqueta amb major probabilitat. Un cop fetes les prediccions, es calculen les mètriques triades com a mètode d'avaluació dels resultats: la matriu de confusió i l’accuracy de cada classe (el valor de la loss també és una mètrica feta servir per l'avaluació, però aquesta és calculada durant l’entrenament). Com a resultat es retorna el groud truth (etiquetes correctes) i les labels predites.
 
 
-## Models - Analisis I Resultats
-En aquest apartat anirem explicant els principals models que s'han provat, i les resultats obtinguts sobre els mateixos.
+## Models - Anàlisis i Resultats
+En aquest apartat s'explicaran els principals models que s'han provat, i els resultats obtinguts sobre aquests.
 
 #### ResNet50 - Primera presa de contacte 
-Per començar voliem saber quin era el nostre punt de partida, per aixó ens vam besar en una ResNet50 ja que de forma general te un rendiment bo per aquests tipus de classificació.
+Per començar es va voler saber quin era el punt de partida, per això ens va partir d'una ResNet50, ja que de forma general té un rendiment bo per aquests tipus de classificació.
 
-Com a funció de loss vam utilitzar ``CrossEntropyLoss`` ja que es la mes adequada en classificació multiclass i com a funció d'optimització ``RMSProp``, ja que voliem observar els seus resultats. 
+Com a funció de loss es va utilitzar ``CrossEntropyLoss``, ja que és la més adequada en classificació multiclass i com a funció d'optimització ``RMSProp``, ja que es vol ia observar els seus resultats. 
 
 | Train Loss | Val Loss |
 | ------------- | ------------- |
 |  ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/2664c425-3e74-47be-ac9a-f3c803efd206) | ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/68e2fe55-960b-40d1-ba02-fba4c7cd69b7)| 
 
-Respecte a la Loss, podem observar molta semblança entre les dades d'entrenement i test, aixo es indica que el model no presenta overfiting i per tant no s'esta adaptant practicame al conjunt de dades d'entrenament. Tot i que puguem observar algunes variacions en la loss del conjunt de validació, veiem una tendencia general la disminució a mesura que avança l'entrenament. Aixo es una bona senyal i per tant el model esta aprenent ve a generalitzar.
+Respecte a la Loss, es pot observar molta semblança entre les dades d'entrenament  i test, això indica que el model no presenta overfitting i, per tant, no s'està adaptant pràcticamet al conjunt de dades d'entrenament. Tot i que es puguin observar algunes variacions en la loss del conjunt de validació, veiem una tendència general la disminució a mesura que avança l'entrenament. Això és un bon senyal i, per tant, el model està aprenent bé a generalitzar.
 
 | Train Acc | Val Acc |
 |-------------|-------------|
 |![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/8764274d-251f-4b7a-894d-26c8d6d88a38)  | ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/62ec8098-c647-488a-b9d8-d7e43ae6bb31)|
 
-Revisant els accuracys confirmem que no hi tenim overfiting. El que si que trobem tant en el train com en la validació, es que hi ha un estancament en la millora del acuracy dels models. Arrivant nomes a un **49,55%** en el model de validació. En vista d'aquestes resultats, com s'ha mencionat en l'aparat i explicació del metode a seguir, s'implentaran diferentes estrategies per intentar abolir-ho i millorar.
+Revisant els accuracys es pot afirmar que no hi tenim overfitting. El que sí que s'observa tant en el train com en la validació, és que hi ha un estancament en la millora de l'accuracy dels models. Arribant només a un **49,55%** en el model de validació. En vista d'aquests resultats, com s'ha mencionat en l'aparat i explicació del mètode a seguir, s'implantaran diferents estratègies per intentar abolir-ho i millorar.
 
  __Confusing Matrix__ 
 
 ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/bf3a8ecc-6803-4a92-a5a7-31d864616c00)
 
-Observant la matriu de confusió respecte el model ResNet , es veu molt clarament com generes com **Folk, HipHop o Rock** tenen presicions molt elevades i son facilment classificables, en canvi d'altres com **Pop o Experimental** son bastant mes conflitius, ja que es confonen amb altres generes i per tant no es classifiquen correctament. Aixo es podria deure a la gran quantitat de diversitat i variacions que es solen trobar en aquests generes. Generes com els primers mencionats mantenen uns patrons molt propis del genere i facilment identificables. 
+Observant la matriu de confusió respecte al model ResNet, es veu molt clarament com gèneres com **Folk, HipHop o Rock** tenen precisions molt elevades i són fàcilment classificables, en canvi, d'altres com **Pop o Experimental** són bastant més conflictius, ja que es confonen amb altres generes i, per tant, no es classifiquen correctament. Això es podria deure a la gran quantitat de diversitat i variacions que es solen trobar en aquests gèneres. Generes com els primers mencionats mantenen uns patrons molt propis del gènere i fàcilment identificables.
 
 #### ResNet50 vs EfficentNet
 
-En vista del punt de partida, on teniem un **49,55%** d'accuracy i tant el model de train com de test es quedaven estancats i no milloraven, es va decidir ara ya implementar l'estrategia d'utilitzar un **Learning Rate Decay** per inentar que el model convergis milloar al quedarse estancat, i d'aquesta forma intentar arrivar a un accuracy mes elevat. Es va fer us també del dataset que contenia **Data Augementation**, d'aquesta forma intentar que el model contingues mes dades i puguesin extreure mes carecteristiques per classificar millor. (*Es pot veure l'esspecificació d'implementacio del lr decay i Data Augmenation en l'apartat de metode*)
+En vista del punt de partida, on hi havia un **49,55%** d'accuracy i tant el model de train com el de test es quedaven estancats i no milloraven, es va decidir implementar l'estratègia de **Learning Rate Decay** per intentar que el model convergís millor al quedar-se estancat, i d'aquesta forma intentar arribar a un accuracy més elevat. Es va fer ús també del dataset que contenia **Data Augementation**, d'aquesta forma intentar que el model contingues més dades i poguessin extreure més característiques per classificar millor. (*Es pot veure l'especificació d'implementació del lr decay i Data Augmenation en l'apartat de mètode*).
 
-L'estrategia mencionada es va decidir aplicar en dos arquitectures de FeatureExtraction diferents. Com poden ser la ResNet50 que ja veniem utilitzant i una arquitectura EfficentNetB0. La diferencia principal entre elles es que la ResNet50 conte 50 capes, pero extreu mes carecteristiques de les dades d'entrada. En canvi la EfficentNetB0 conte 224 capes, pero es una red mes compacta que no agafa tantes carectersitques de les dades d'entrada.
+L'estratègia mencionada es va aplicar en dues arquitectures de FeatureExtraction diferents. Com poden ser la ResNet50 que ja es venien utilitzant i una arquitectura EfficentNetB0. La diferència principal entre elles és que la ResNet50 conte 50 capes, però extreu més característiques de les dades d'entrada. En canvi, la EfficentNetB0 conte 224 capes, però és una xarxa més compacta que no agafa tantes característiques de les dades d'entrada.
 
 |   | ResNet50 | EfficientNet |
 |---|-------------|-------------|
 |Train Loss|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/5f0cc400-f8a1-4525-a52d-df0f8d2f271b) |![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/29dd8bb7-9374-4588-aa1c-91469fe26fe8)|
 |Val Loss|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/8343639d-46ee-442d-a95e-9f76dde284d2) |![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/0874f7b5-e5d3-4ca1-8023-32bd9bb13ecf)|
 
-Es pot obersevar com en la loss de la ResNet50 la baixada en el train ja no es tant progresiva com avans i en la validació presenta pics de pujada durant la disminució, aixo podem començar a ser sinmptomes de que el model esta tenint oberfitting, un altre paramatre que ho reforcaria, seria que el train també esta arrivant a una loss mes baixa que la validació. En la loss del model d'EfficientNet veiem una disminusió molt gran en el train, arrivant practicament a 0 i en la validació un augment, aixo es una molt clara indicació d'overfiting ja que el model s'esta adpatant molt a les dades d'entrenament i no es capaç de classificar la validació. Aixo creiem que es pot deure ja que el Model de EfficentNet al recollir menys carecteristiques, pero tenir mes capes, s'adapti massa a aquelles carcerctersitiques d'entrenament. En canvi ResNet al agafar mes carecteristiques apren a generelaitzar millor.
+Es pot observar com en la loss de la ResNet50 la baixada en el train ja no és tan progressiva com abans i en la validació presenta pics de pujada durant la disminució, això podem començar a ser símptomes de què el model està tenint overfittng. Un altre paràmetre que ho reforçaria, seria que el train també està arribant a una loss més baixa que la validació. En la loss del model d'EfficientNet veiem una disminució molt gran en el train, arribant pràcticament a 0 i en la validació un augment, això és una molt clara indicació d'overfittng, ja que el model s'està adaptant molt a les dades d'entrenament i no és capaç de classificar la validació. Això creiem que es pot deure, ja que el Model de EfficentNet al recollir menys característiques, però tenir més capes, s'adapti massa a aquelles característiques d'entrenament. En canvi, ResNet a l'agafar més característiques aprèn a generalitzar millor.
 
 |   | ResNet50 | EfficientNet |
 |---|-------------|-------------|
@@ -146,15 +146,15 @@ Es pot obersevar com en la loss de la ResNet50 la baixada en el train ja no es t
 |Val Acc| ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/0ace934e-0a2b-45b9-b2ef-d30487dc2ef9)|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/1e8cbfc0-5e92-498a-83d3-16725710be81)
  |
 
-En referencia als accuracys, veiem com en al ResNet no hem obtingut gaire millora respecte al seu model anterior, on ara aconseguim un **50,87%** d'accuracy, senyal de que tot i amb el **Data Augmentation** i el **Learning Rate Decay** el model ja no es capaç de millorar gaire mes. Per altre banda el model d'EfficientNet presenta un oberffiting massium com suposavem. Tot i aixó en vista de que l'acurracy de validació es el mes alt aconseguit fins el moment (un **54,85%**) i que encara teniem marge de millora treien l'overffiting, vem decidir continuar per aquest cami.
+En referència als accuracys, veiem com en el ResNet no hem obtingut gaire millora respecte al seu model anterior, on ara aconseguim un **50,87%** d'accuracy, senyal que tot i amb el **Data Augmentation** i el **Learning Rate Decay** el model ja no és capaç de millorar gaire més. Per altra banda, el model d'EfficientNet presenta un overfitting massiu com suposàvem. Tot i això, en vista que l'acurracy de validació és el més alt aconseguit fins al moment (un **54,85%**) i que encara hi havia marge de millora treien l'overffiting, es va decidir continuar per aquest camí.
 
 #### EfficentNet - Millor Model
 
-En vista de l'overffitng que presentava el model d'EfficientNet i que voliem eliminar, vem decidir implemnetar una tecnica de reulgarització com pot ser el  DropOut (*tal i com en el Learning Rate Decay, la implementació del DropOut esta explicada en l'apartat de Metode*), aquesta tecnica consisteix en apagar algunes de les neurones de la capa congelada amb una probabilitat del 50%, per d'aquesta manera evitar que el model s'adapti molt a les dades d'entrenemnet i aixi poder evitar l'overfitting.
+En vista de l'overfitting que presentava el model d'EfficientNet, es va decidir implementar una tècnica de regularització com pot ser el DropOut (*tal i com en el Learning Rate Decay, la implementació del DropOut està explicada en l'apartat de Mètode*), aquesta tècnica consisteix a apagar algunes de les neurones de la capa congelada amb una probabilitat del 50%, i d'aquesta manera evitar que el model s'adapti molt a les dades d'entrenament i així poder evitar l'overfitting.
 
-Com a resultat de que l'utilització de **Data Augmentation** no va ser un factor direferncial en la ResNet vem decidir probar dos model nous en EfficientNet treient l'overfting com hem comentat, i on un utilitzaria el dataset amb **Data Augmentation** i l'altre sense. Comentar també que es va seguir mantenint el **Learning Rate Decay**.
+Com a resultat de l'utilització de **Data Augmentation** no va ser un factor diferencial en la ResNet, es va decidir provar dos models nous en EfficientNet, eliminant l'overfitting com s'ha comentat, i on un utilitzaria el dataset amb **Data Augmentation** i l'altre sense. Comentar també que es va continuar mantenint el **Learning Rate Decay**.
 
-*Per diferenicar els models, estarem utilitzant ``DA`` fent referencia a Data Augmentation , respecte si l'estem aplicant o no.*
+*Per diferenciar els models, estarem utilitzant ''DA'' fent referència a Data Augmentation, respecte si l'estem aplicant o no.*
 
 
 |   | EfficientNet ``DA`` | EfficientNet |
@@ -162,37 +162,37 @@ Com a resultat de que l'utilització de **Data Augmentation** no va ser un facto
 |Train loss|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/1a6225b2-4110-4a33-943e-293f904caf8f)|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/6dba12fe-3ef8-4c98-842e-e5608b95ba4e)|
 |Val loss|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/77b61b7e-2cca-4f33-9f33-9b068dc0e98d)|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/e72ead4f-8f74-4274-8ba3-85d3c4b79402)|
 
-En els dos models observem unes funcions loss molt similars que sembla que encara manetinguin una mica de overfitting, donat que les losses en el train dismineuixen progressivament i arriven a uns valors bastant bons, pero en canvi en en la validació tenen un comportament amb oscilacions i amb resultats no tant bons com en el train, tot i aixó es veu com l'overfiting s'ha reduit molt considerablament si tenim en compte l'anetior model d'EfficientNet vist.
+En els dos models s'oberven unes funcions loss molt similars que sembla que encara mantinguin una mica d'overfitting, donat que les losses en el train disminueixen progressivament i arriben a uns valors bastant bons, però, en canvi, en la validació tenen un comportament amb oscil·lacions i amb resultats no tant bons com en el train, tot i això, es veu com l'overfitting s'ha reduït molt considerablement si es té en compte l'anterior model d'EfficientNet.ist.
 
 |   | EfficientNet ``DA`` | EfficientNet |
 |---|-------------|-------------|
 |Train Acc|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/298a6aca-b7d5-4a3c-9dbe-51500fce16d1)|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/a46d675f-d4c6-4f7e-bc07-546965c845f4)|
 |Val Acc|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/720ca072-f1df-45cc-bcd6-ffc66cfcc61c)|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/f84bd743-3dd1-4a67-a041-1c0d26385066)|
 
-Respecte a les accuracy dels models, tambe hi trobem un comportament molt similar, amb una mica d'overfitting en el model que utilitza ``DA``, pero practicament insignificant. Tot i aixo el model sense ``DA`` arriva a la maxima accuracy aconseguida, sent aquesta d'un **57,89%**. Aixo es deu a que el ``DA`` no esta tenint un afecte real l'hora de que apendre a classificar millor entre eles generes, com ja haviem vist en la ResNet50. 
+Respecte a les accuracy dels models, també hi ha un comportament molt similar, amb una mica d'overfitting en el model que utilitza ''DA'', però pràcticament insignificant. Tot i això, el model sense ''DA'' arriba a la màxima accuracy aconseguida, sent aquesta d'un **57,89%**. Això es deu al fet que el ''DA'' no està tenint un afecte real a l'hora d'aprendre a classificar millor entre els gèneres, com s'havia vist en la ResNet50.
 
  __Confusing Matrix__ EffientNet
  
  ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/a82be60a-a7e1-4029-b17d-34d3b998ddbd)
 
-Si comparem la confusing matrix obtinguda en el model on no utiltzem ``DA`` amb la primera ResNet50, veiem com ara de forma general es classifiquen molt millor tots els generes, excepte **Pop** que es el genere que segueix tenint mes problemes  i es confon bastant amb **Folck i Rock**, pero no a l'inversa. Veiem també com el genere **Experminetal** ha millorat molt considerablament.
+Si comparem la confusing matrix obtinguda en el model on no es fa servir ''DA'' amb la primera ResNet50, es veu com ara de forma general, es classifiquen molt millor tots els gèneres, excepte **Pop** que és el gènere que continua tenint més problemes i es confon bastant amb **Folck i Rock**, però no a la inversa. Veiem també com el gènere **Experminetal** ha millorat molt considerablement.
 
 ## Conclusions
 
-Com a conclusions de l'article volem comentar 3 temes principals:
+Com a conclusions de l'article es volen comentar 3 temes principals:
 
-1. Ens ha sorpres que la utilització de **Data Augmentation** no hagi sigut un tret diferencial a l'hora de classificar, creiem que pot ser afecte d'un cojunt de raons:
- * Insuficiencia de variabilitat en les dades originals, d'auqesta forma fer un augemnet de dades no afegiria noves carcercteristique que es puguesin aprendre per classificar millor.
- * Al tenir un dataset d'entrenamnet petit, i relacionat amb el punt anterior , l'utilització data augmentation tindria un afecte poc representatiu en les noves carceteristiques que es podrien aprendre.
+1. Ens ha sorprès que la utilització de **Data Augmentation** no hagi sigut un tret diferencial a l'hora de classificar, es creu que pot ser afecte d'un conjunt de raons:
+* Insuficiència de variabilitat en les dades originals, d'aquesta forma fer un augment de dades no afegiria noves característiques que es poguessin aprendre per classificar millor.
+* Al tenir un dataset d'entrenament petit, i relacionat amb el punt anterior, la utilització data augmentation tindria un afecte poc representatiu en les noves característiques que es podrien aprendre.
 
-2. El millor model aconseguit s'esdave de l'utilització de trasnfer leraning fent servir la tecnica de Feature Extraction amb l'arquitectura d'una EfficientNetB0 amb un Learning Rate adaptatiu com pot ser el Decay i la regularització DropOut per evitar l'overfiting. Aconseguint aquest un accuracy final del **57,89%**.
+2. El millor model aconseguit s'esdevé de la utilització de trasnfer leraning fent servir la tècnica de Feature Extraction amb l'arquitectura d'una EfficientNetB0 amb un Learning Rate adaptatiu com pot ser el Decay i la regularització DropOut per evitar l'overfitting. Obtenint aquest un accuracy final del **57,89%**.
 
-3. Fent una recerca d'altres treballs on també es fes classificació de generes de musica a traves d'espectogrames i fent l'utilització del dataset d'FMA SMALL, s'ha vist que els seus millors resultats son:
+3. Fent una recerca d'altres treballs on també es fes classificació de gèneres de música a través d'espectrogrames i fent la utilització del dataset d'FMA SMALL, s'ha vist que els seus millors resultats són:
 
  * [``GitHub mdeff/fma``](https://github.com/mdeff/fma/): **17,60%**
  * [``GitHub yijerjer/music_genre_classification``](https://github.com/yijerjer/music_genre_classification/blob/master/README.md): **46,70%**
 
- Per tant creiem que el nostre article ha arrivat a uns bons resultats.
+ Per tant, es pot die que el nostre article ha arribat a uns bons resultats.
 
 
 ## Referencies
