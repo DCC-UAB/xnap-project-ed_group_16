@@ -2,7 +2,7 @@
 
 Aquest projecte és una recerca des de zero per intentar classificar arxius de música segons el seu gènere a través de la implementació de deep learning. Per fer-ho s'ha fet servir PyTorch com a llibreria principal i librosa pel tractament d'àudio.
 
-![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/99728a8d-9e2c-4718-b43a-07fee2f6707b)
+
 
 ## Data - FMA
 Per aquest projecte estarem utilitzant les dades de FMA, en concret la seva versió més reduïda anomenada FMA SMALL i les seves metadades FMA METADATA.
@@ -14,19 +14,6 @@ Els fitxers utilitzats en aquest projecte són els següents:
 
 Les pistes d'audio MP3-encoded les podem trobar en el seguent lloc:
 * [``fma_small.zip``](https://os.unil.cloud.switch.ch/fma/fma_small.zip) : 8,000 pistes d'audio de 30s, 8 generes balancejats (7.2 GiB)
-
-## Detecció de Matricules
-Per detectar la regio de la imatge on es troba la matricula es poden utilitzar diferents tecniques com per exemple deteccio de controns probables o extracció de carecteristiques a traves de transformacions black-hat.
-
-En un principi vam intentar reconeixer aquesta zona de la imatge a traves de la deteccio probable de contonrs (rectangles) pertenyens a la matricula, pero aquesta tecnica era molt dependent de la prespectiva i entorn de la fotografia. Per tant la vam descartar i vam decidir fer deteccions a traves de la extraccio de carecteristiques amb la tecnica black-hat i aplicant dilates i erodes en la imatge resultant.
-
-El proposit de fer dilates i erodes era crear zones compactes seperades en la imatge, d'aquesta forma aconseguiem totes les zones possibles on hi pugues haver-hi la matricula i nomes calia identificar quina d'aquestes era.
-
-Per aconseguir la zona correcta es va implementar un funció ``find_region`` que buscava contorns  rectancuglars es a dirm amb 4 costats i aspect ratio corresponent en la imatge dilatada. Aquesta implementació ha aconseguit trobar correctament totes les regions de les diferentes imatges on hi havia la matricula.
-
-| Step 1 | Step 2 | ... | Step X|
-| -------------| ------------- | -------------|------------- |
-|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/bcf4c783-b62f-4cb4-9f6c-b8c16ce0bf81) |![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/1b424e79-c026-4b76-8189-d6a398316532)|![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/625a0e57-86bf-45b6-b471-7d6fffea7610)| ![image](https://github.com/DCC-UAB/xnap-project-ed_group_16/assets/61145059/89f3ab0f-c652-4472-b6af-79d388eb5a61)|
 
 ## Codi
 El projecte conté els següents arxius *ipynb* i *py*:
